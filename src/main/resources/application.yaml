@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/lattmat
+    username: root
+    password: Zayar2142000
+  jpa:
+    hibernate:
+      ddl-auto: create
