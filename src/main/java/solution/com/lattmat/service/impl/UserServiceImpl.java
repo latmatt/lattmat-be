@@ -14,8 +14,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private ModelMapper modelMapper;
-    private UserRepository userRepository;
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
 
     @Override
     public Optional<Users> findUserByPhoneNumber(String phoneNumber) {

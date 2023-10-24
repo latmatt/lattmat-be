@@ -5,10 +5,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import solution.com.lattmat.domain.CustomResponse;
+import solution.com.lattmat.exception.domain.InvalidCredentialsException;
+import solution.com.lattmat.exception.domain.PhoneNumberAlreadyExistException;
+import solution.com.lattmat.exception.domain.TokenRefreshException;
 import solution.com.lattmat.exception.domain.UsernameAlreadyExistException;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static solution.com.lattmat.constant.MessageConstant.USERNAME_ALREADY_EXIST;
+import static org.springframework.http.HttpStatus.*;
+import static solution.com.lattmat.constant.MessageConstant.*;
 
 @RestControllerAdvice
 public class ExceptionHandlers {
@@ -16,6 +19,21 @@ public class ExceptionHandlers {
     @ExceptionHandler(UsernameAlreadyExistException.class)
     public ResponseEntity<CustomResponse> usernameAlreadyExistException() {
         return createHttpResponse(CONFLICT, USERNAME_ALREADY_EXIST);
+    }
+
+    @ExceptionHandler(PhoneNumberAlreadyExistException.class)
+    public ResponseEntity<CustomResponse> phoneNumberAlreadyExistException() {
+        return createHttpResponse(CONFLICT, PHONE_NUMBER_ALREADY_EXIST);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<CustomResponse> invalidCredentialsException() {
+        return createHttpResponse(FORBIDDEN, INVALID_CREDENTIALS);
+    }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<CustomResponse> tokenRefreshException(Exception ex) {
+        return createHttpResponse(FORBIDDEN, ex.getMessage());
     }
 
     private ResponseEntity<CustomResponse> createHttpResponse(HttpStatus httpStatus, String message){
