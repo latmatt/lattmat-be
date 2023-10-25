@@ -6,7 +6,7 @@ MAINTAINER ZAYARLINNNAUNG
 # Add the application's jar to the container
 COPY target/lattmat-0.0.1-SNAPSHOT.jar lattmat.jar
 
-EXPOSE 443
+EXPOSE 8080
 
 #execute the application
 ENTRYPOINT ["java","-jar","/lattmat.jar"]
