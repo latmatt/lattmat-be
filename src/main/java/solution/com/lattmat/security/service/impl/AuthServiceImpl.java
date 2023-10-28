@@ -27,7 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDto signUp(SignUpUserRecord user) {
+    public UserDto register(SignUpUserRecord user) {
 
         Optional<Users> usersOptional = userService.findUserByPhoneNumber(user.phoneNumber());
         if(usersOptional.isPresent()){

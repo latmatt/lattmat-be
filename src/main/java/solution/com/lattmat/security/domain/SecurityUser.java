@@ -1,20 +1,37 @@
 package solution.com.lattmat.security.domain;
 
-import lombok.AllArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import solution.com.lattmat.model.Users;
 
 import java.util.Collection;
+import java.util.Map;
 
 @AllArgsConstructor
-public class SecurityUser implements UserDetails {
+@NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@ToString
+public class SecurityUser implements UserDetails, OidcUser {
 
-    private final Users user;
+    private Users user;
+
+    private Map<String, Object> attributes;
+    private Collection<? extends GrantedAuthority> authorities;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return authorities;
     }
 
     @Override
@@ -45,5 +62,25 @@ public class SecurityUser implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.isLock();
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return null;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return null;
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 }

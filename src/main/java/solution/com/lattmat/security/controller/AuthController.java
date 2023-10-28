@@ -2,10 +2,7 @@ package solution.com.lattmat.security.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.User;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -26,8 +23,6 @@ import solution.com.lattmat.security.service.RefreshTokenService;
 import solution.com.lattmat.security.utils.JwtUtilities;
 import solution.com.lattmat.service.UserService;
 
-import java.util.HashMap;
-
 import static solution.com.lattmat.security.config.SecurityConfigConst.REFRESH_TOKEN;
 
 @RestController
@@ -40,10 +35,27 @@ public class AuthController extends BaseController {
     private final JwtUtilities jwtUtilities;
     private final RefreshTokenService refreshTokenService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<CustomResponse> signUp(@RequestBody SignUpUserRecord user){
+    @PostMapping("/register")
+    public ResponseEntity<CustomResponse> register(@RequestBody SignUpUserRecord user){
 
-        UserDto newUser = authService.signUp(user);
+        UserDto newUser = authService.register(user);
+
+        return createResponse(
+                true, HttpStatus.CREATED,
+                null,
+                new UserInfoResponse(
+                        newUser.getId(),
+                        newUser.getUsername(), newUser.getFirstName(),
+                        newUser.getLastName(), newUser.getPhoneNumber(),
+                        newUser.getMail(), newUser.getProfileImage()),
+                "Successfully registered");
+
+    }
+
+    @GetMapping("/oauth-register")
+    public ResponseEntity<CustomResponse> oauthRegister(@RequestBody SignUpUserRecord user){
+
+        UserDto newUser = authService.register(user);
 
         return createResponse(
                 true, HttpStatus.CREATED,

@@ -23,6 +23,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<Users> findUserByUsername(String username) {
+        return userRepository.findUsersByUsername(username);
+    }
+
+    @Override
+    public Optional<Users> findUsersByOauthLoginId(String userid) {
+        return userRepository.findUsersByOauthLoginId(userid);
+    }
+
+    @Override
     public UserDto saveUser(UserDto user) {
         Users u = modelMapper.map(user, Users.class);
         u = userRepository.save(u);

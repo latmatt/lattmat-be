@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface UserService {
     Optional<Users> findUserByPhoneNumber(String phoneNumber);
+    Optional<Users> findUserByUsername(String username);
+    Optional<Users> findUsersByOauthLoginId(String userid);
     UserDto saveUser(UserDto user);
 }

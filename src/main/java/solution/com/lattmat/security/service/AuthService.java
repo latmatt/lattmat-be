@@ -6,6 +6,6 @@ import solution.com.lattmat.security.model.LoginUserRecord;
 import solution.com.lattmat.security.model.SignUpUserRecord;
 
 public interface AuthService {
-    UserDto signUp(SignUpUserRecord user);
+    UserDto register(SignUpUserRecord user);
     Users login(LoginUserRecord user);
 }
