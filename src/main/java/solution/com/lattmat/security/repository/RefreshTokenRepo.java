@@ -9,7 +9,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RefreshTokenRepo extends JpaRepository<RefreshToken, UUID> {
+
     Optional<RefreshToken> findRefreshTokenByUserPhoneNumber(String phoneNumber);
+    Optional<RefreshToken> findRefreshTokenByUserOauthLoginId(String loginId);
     Optional<RefreshToken> findByToken(String token);
 
     @Modifying

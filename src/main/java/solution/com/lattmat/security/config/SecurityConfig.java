@@ -2,6 +2,7 @@ package solution.com.lattmat.security.config;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import solution.com.lattmat.security.domain.OAuth2AuthenticationSuccessHandler;
 import solution.com.lattmat.security.filter.JwtAuthenticationFilter;
 
 @Slf4j
@@ -25,6 +27,7 @@ import solution.com.lattmat.security.filter.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain (
@@ -37,10 +40,10 @@ public class SecurityConfig {
                 .cors(c -> c.disable())
                 .oauth2Login(oc -> oc
                         .loginPage("/login")
-                        .defaultSuccessUrl("/user")
                         .userInfoEndpoint(ui -> ui
                                 .userService(oauth2LoginHandler)
-                                .oidcUserService(oidcLoginHandler)))
+                                .oidcUserService(oidcLoginHandler))
+                .successHandler(oAuth2AuthenticationSuccessHandler))
                 .authorizeHttpRequests(req -> req.anyRequest().permitAll())
                 .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -53,6 +56,7 @@ public class SecurityConfig {
 
     @Bean
     ApplicationListener<AuthenticationSuccessEvent> successLogger() {
+
         return event -> {
             log.info("success: {}", event.getAuthentication());
         };

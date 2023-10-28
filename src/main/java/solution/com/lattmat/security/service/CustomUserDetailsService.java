@@ -86,7 +86,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private void saveOauth2User(SecurityUser securityUser) {
-        CompletableFuture.runAsync(() -> createUser(securityUser), executor);
+//        CompletableFuture.runAsync(() -> createUser(securityUser), executor);
+        createUser(securityUser);
     }
 
     @Transactional
