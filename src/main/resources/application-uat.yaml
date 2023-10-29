@@ -1,3 +1,7 @@
+app:
+  oauth2:
+    redirectUri: https://materialistic-hole-production.up.railway.app/api/v1/o/login-rediret
+
 spring:
   datasource:
     url: jdbc:postgresql://dpg-cksupf8168ec73emr0rg-a.singapore-postgres.render.com/lattmat_db
