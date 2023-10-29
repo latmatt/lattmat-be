@@ -31,7 +31,7 @@ public class OAuthController extends BaseController {
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login-rediret")
-    public ResponseEntity<CustomResponse> callBack(@RequestParam String userId){
+    public ResponseEntity<CustomResponse<UserInfoResponse>> callBack(@RequestParam String userId){
 
         Users loginUser = userService.findUsersByLoginId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid user"));

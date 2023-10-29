@@ -20,14 +20,14 @@ public class OTPController extends BaseController {
     private OTPService otpService;
 
     @PostMapping
-    public ResponseEntity<CustomResponse> getOtp(@RequestParam(required = true) String phoneNumber, HttpSession session){
+    public ResponseEntity<CustomResponse<String>> getOtp(@RequestParam(required = true) String phoneNumber, HttpSession session){
         String otp = otpService.generateOTP(phoneNumber);
         session.setAttribute(SecurityConstant.OTP, otp);
         return createResponse(true, HttpStatus.OK, otp, "OTP generated...");
     }
 
     @PostMapping("/validate")
-    public ResponseEntity<CustomResponse> validateOTP(@RequestBody OTPValidateRecord validateRequest){
+    public ResponseEntity<CustomResponse<String>> validateOTP(@RequestBody OTPValidateRecord validateRequest){
         boolean isValid = otpService.validateOTP(validateRequest.otp(), validateRequest.phoneNumber());
         return createResponse(isValid, HttpStatus.OK, null, "IS_VALID - " + isValid);
     }

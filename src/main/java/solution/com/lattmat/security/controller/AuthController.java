@@ -22,6 +22,8 @@ import solution.com.lattmat.security.service.AuthService;
 import solution.com.lattmat.security.service.RefreshTokenService;
 import solution.com.lattmat.security.utils.JwtUtilities;
 
+import java.util.UUID;
+
 import static solution.com.lattmat.security.config.SecurityConfigConst.REFRESH_TOKEN;
 
 @RestController
@@ -34,7 +36,7 @@ public class AuthController extends BaseController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<CustomResponse> register(@RequestBody SignUpUserRecord user){
+    public ResponseEntity<CustomResponse<UserInfoResponse>> register(@RequestBody SignUpUserRecord user){
 
         UserDto newUser = authService.register(user);
 
@@ -51,7 +53,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CustomResponse> login(@RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password){
+    public ResponseEntity<CustomResponse<UserInfoResponse>> login(@RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password){
 
         LoginUserRecord user = new LoginUserRecord(phoneNumber, password);
         Users loginUser = authService.login(user);
@@ -108,9 +110,20 @@ public class AuthController extends BaseController {
         return createResponse(
                 false, HttpStatus.BAD_REQUEST, null,
                 new MessageResponse("Empty"),
-                "Refresh Token is empty!"
-        );
+                "Refresh Token is empty!");
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<CustomResponse<MessageResponse>> changePassword(
+            @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @RequestParam(required = true) UUID userId){
+
+        authService.changePassword(oldPassword, newPassword, userId);
+
+        return createResponse(
+                true, HttpStatus.OK, null,
+                new MessageResponse("Success"),
+                "Password reset successfully...");
+
+    }
 
 }

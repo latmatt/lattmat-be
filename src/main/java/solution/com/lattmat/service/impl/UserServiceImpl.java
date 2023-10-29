@@ -9,6 +9,7 @@ import solution.com.lattmat.repo.UserRepository;
 import solution.com.lattmat.service.UserService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +31,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<Users> findUsersByLoginId(String userid) {
         return userRepository.findUsersByLoginId(userid);
+    }
+
+    @Override
+    public Optional<Users> findUsersById(UUID id) {
+        return userRepository.findById(id);
     }
 
     @Override

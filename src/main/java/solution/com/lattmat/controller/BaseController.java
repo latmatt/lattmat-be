@@ -7,13 +7,13 @@ import solution.com.lattmat.domain.CustomResponse;
 
 public class BaseController {
 
-    protected ResponseEntity<CustomResponse> createResponse(
-            boolean isSuccess, HttpStatus httpStatus, Object data, String message
+    protected <T>ResponseEntity<CustomResponse<T>> createResponse(
+            boolean isSuccess, HttpStatus httpStatus, T data, String message
     ){
         return createResponse(isSuccess, httpStatus,null, data, message);
     }
 
-    protected <T> ResponseEntity<CustomResponse> createResponse(
+    protected <T> ResponseEntity<CustomResponse<T>> createResponse(
             boolean isSuccess, HttpStatus httpStatus, MultiValueMap<String, String> headers, T data, String message
     ){
         CustomResponse response = CustomResponse.builder()

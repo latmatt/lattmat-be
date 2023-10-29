@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import solution.com.lattmat.constant.MessageConstant;
+import solution.com.lattmat.convertor.UserConverter;
 import solution.com.lattmat.dto.UserDto;
 import solution.com.lattmat.exception.domain.InvalidCredentialsException;
 import solution.com.lattmat.exception.domain.PhoneNumberAlreadyExistException;
@@ -17,6 +18,7 @@ import solution.com.lattmat.security.utils.JwtUtilities;
 import solution.com.lattmat.service.UserService;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -51,6 +53,21 @@ public class AuthServiceImpl implements AuthService {
         }
 
         throw new InvalidCredentialsException("Invalid credentials");
+
+    }
+
+    @Override
+    public void changePassword(String oldPassword, String newPassword, UUID id) {
+
+        Users user = userService.findUsersById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userService.saveUser(UserConverter.entityToDto(user));
+        }else{
+            throw new InvalidCredentialsException("Please check your password.");
+        }
 
     }
 }
