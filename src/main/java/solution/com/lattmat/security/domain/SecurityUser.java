@@ -2,11 +2,12 @@ package solution.com.lattmat.security.domain;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 
 import java.util.Collection;
 import java.util.Map;
@@ -20,9 +21,7 @@ import java.util.Map;
 public class SecurityUser implements UserDetails, OidcUser {
 
     private Users user;
-
     private Map<String, Object> attributes;
-    private Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -31,7 +30,11 @@ public class SecurityUser implements UserDetails, OidcUser {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+//        return user.getRoles()
+//                .stream()
+//                .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
+//                .toList();
+        return null;
     }
 
     @Override

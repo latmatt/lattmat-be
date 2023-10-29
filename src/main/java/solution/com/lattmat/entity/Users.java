@@ -1,12 +1,15 @@
-package solution.com.lattmat.model;
+package solution.com.lattmat.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import solution.com.lattmat.enumeration.UserRoleType;
 import solution.com.lattmat.security.enumeration.LoginProvider;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +23,10 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(unique = true)
     private String loginId;
+
     private String username;
     private String firstName;
     private String lastName;
@@ -36,6 +42,15 @@ public class Users {
 
     @Enumerated(EnumType.STRING)
     private LoginProvider provider;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    private Set<Role> roles;
 
     public static Users fromOidcUser(OidcUser oidcUser, LoginProvider provider) {
 
@@ -60,5 +75,13 @@ public class Users {
                 .loginId(oAuth2User.getName())
                 .profileImage(oAuth2User.getAttribute("avatar_url"))
                 .build();
+    }
+
+    public void addRole(Role role) {
+        if(roles.isEmpty()){
+           roles = new HashSet<>();
+        }
+
+        roles.add(role);
     }
 }

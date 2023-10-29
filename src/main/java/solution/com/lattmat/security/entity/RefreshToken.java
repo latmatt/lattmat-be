@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 

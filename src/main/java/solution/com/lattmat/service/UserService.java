@@ -1,6 +1,6 @@
 package solution.com.lattmat.service;
 
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.dto.UserDto;
 
 import java.util.Optional;
