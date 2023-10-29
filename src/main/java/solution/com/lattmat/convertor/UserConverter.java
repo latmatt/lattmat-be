@@ -2,7 +2,7 @@ package solution.com.lattmat.convertor;
 
 import org.modelmapper.ModelMapper;
 import solution.com.lattmat.dto.UserDto;
-import solution.com.lattmat.entity.Users;
+import solution.com.lattmat.model.Users;
 
 public class UserConverter {
 

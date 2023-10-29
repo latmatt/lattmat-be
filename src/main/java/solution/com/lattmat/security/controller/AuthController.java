@@ -12,7 +12,7 @@ import solution.com.lattmat.domain.CustomResponse;
 import solution.com.lattmat.domain.MessageResponse;
 import solution.com.lattmat.dto.UserDto;
 import solution.com.lattmat.exception.domain.TokenRefreshException;
-import solution.com.lattmat.entity.Users;
+import solution.com.lattmat.model.Users;
 import solution.com.lattmat.security.config.SecurityConfigConst;
 import solution.com.lattmat.security.entity.RefreshToken;
 import solution.com.lattmat.security.model.LoginUserRecord;

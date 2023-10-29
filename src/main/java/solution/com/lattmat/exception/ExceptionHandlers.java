@@ -7,7 +7,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import solution.com.lattmat.domain.CustomResponse;
-import solution.com.lattmat.exception.domain.*;
+import solution.com.lattmat.exception.domain.InvalidCredentialsException;
+import solution.com.lattmat.exception.domain.PhoneNumberAlreadyExistException;
+import solution.com.lattmat.exception.domain.TokenRefreshException;
+import solution.com.lattmat.exception.domain.UsernameAlreadyExistException;
 
 import static org.springframework.http.HttpStatus.*;
 import static solution.com.lattmat.constant.MessageConstant.*;
@@ -27,11 +30,6 @@ public class ExceptionHandlers {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<CustomResponse> invalidCredentialsException(Exception ex) {
-        return createHttpResponse(FORBIDDEN, ex.getMessage());
-    }
-
-    @ExceptionHandler(UserRoleNotFoundException.class)
-    public ResponseEntity<CustomResponse> userRoleNotFoundException(Exception ex) {
         return createHttpResponse(FORBIDDEN, ex.getMessage());
     }
 

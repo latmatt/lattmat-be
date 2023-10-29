@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import solution.com.lattmat.entity.Users;
+import solution.com.lattmat.model.Users;
 import solution.com.lattmat.security.domain.SecurityUser;
 import solution.com.lattmat.service.UserService;
 
@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         final Users user = userService.findUsersByLoginId(loginId)
                 .orElseThrow(() -> new UsernameNotFoundException("There is no user"));
 
-        return new SecurityUser(user, null);
+        return new SecurityUser(user, null, null);
     }
 
 }

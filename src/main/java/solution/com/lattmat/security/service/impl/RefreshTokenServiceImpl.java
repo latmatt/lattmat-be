@@ -1,12 +1,14 @@
 package solution.com.lattmat.security.service.impl;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import solution.com.lattmat.exception.domain.TokenRefreshException;
-import solution.com.lattmat.entity.Users;
+import solution.com.lattmat.model.Users;
 import solution.com.lattmat.repo.UserRepository;
+import solution.com.lattmat.security.config.SecurityConfigConst;
 import solution.com.lattmat.security.entity.RefreshToken;
 import solution.com.lattmat.security.repository.RefreshTokenRepo;
 import solution.com.lattmat.security.service.RefreshTokenService;
