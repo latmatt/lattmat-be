@@ -13,6 +13,7 @@ import java.io.OutputStream;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static solution.com.lattmat.constant.MessageConstant.FORBIDDEN_MESSAGE;
 
 @Component
 public class JWTAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
@@ -21,7 +22,7 @@ public class JWTAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, IOException {
 
         CustomResponse httpResponse = CustomResponse.builder()
-                .success(false).code(FORBIDDEN.value()).data(null).message(exception.getMessage()).build();
+                .success(false).code(FORBIDDEN.value()).data(null).message(FORBIDDEN_MESSAGE).build();
 
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setStatus(FORBIDDEN.value());

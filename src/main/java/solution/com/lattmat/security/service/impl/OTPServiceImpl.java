@@ -10,8 +10,7 @@ public class OTPServiceImpl implements OTPService {
 
     @Override
     public String generateOTP(String phoneNumber) {
-        int length = phoneNumber.length();
-        return phoneNumber.substring(length-6, length);
+        return "123456";
     }
 
     @Override
