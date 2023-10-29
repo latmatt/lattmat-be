@@ -1,7 +1,7 @@
 package solution.com.lattmat.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 
 import java.util.Optional;
 import java.util.UUID;

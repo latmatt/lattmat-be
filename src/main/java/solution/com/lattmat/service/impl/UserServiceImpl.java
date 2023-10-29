@@ -3,7 +3,7 @@ package solution.com.lattmat.service.impl;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.dto.UserDto;
 import solution.com.lattmat.repo.UserRepository;
 import solution.com.lattmat.service.UserService;

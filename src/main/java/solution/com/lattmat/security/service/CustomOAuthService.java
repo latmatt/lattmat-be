@@ -11,17 +11,24 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import solution.com.lattmat.convertor.RoleConverter;
 import solution.com.lattmat.convertor.UserConverter;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Role;
+import solution.com.lattmat.entity.Users;
+import solution.com.lattmat.enumeration.UserRoleType;
 import solution.com.lattmat.security.domain.SecurityUser;
 import solution.com.lattmat.security.enumeration.LoginProvider;
+import solution.com.lattmat.service.RoleService;
 import solution.com.lattmat.service.UserService;
+
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
 public class CustomOAuthService {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Bean
     public OAuth2UserService<OidcUserRequest, OidcUser> oidcLoginHandler() {
@@ -32,11 +39,13 @@ public class CustomOAuthService {
             LoginProvider provider = getProvider(userRequest);
             OidcUser oidcUser = oidcDelegate.loadUser(userRequest);
 
+            Users user = Users.fromOidcUser(oidcUser, provider);
+            Role defaultRole = RoleConverter.dtoToEntity(roleService.getRoleByRoleType(UserRoleType.ROLE_NORMAL_USER));
+            user.setRoles(Set.of(defaultRole));
+
             SecurityUser securityUser = SecurityUser
                     .builder()
-                    .user(Users.fromOidcUser(oidcUser, provider))
-//                    .attributes(oidcUser.getAttributes())
-//                    .authorities(oidcUser.getAuthorities())
+                    .user(user)
                     .build();
 
             saveOauth2User(securityUser);
@@ -54,17 +63,16 @@ public class CustomOAuthService {
             LoginProvider provider = getProvider(userRequest);
             OAuth2User oAuth2User = oauth2Delegate.loadUser(userRequest);
 
+            Users user = Users.fromOAuth2User(oAuth2User, provider);
+            Role defaultRole = RoleConverter.dtoToEntity(roleService.getRoleByRoleType(UserRoleType.ROLE_NORMAL_USER));
+            user.setRoles(Set.of(defaultRole));
+
             SecurityUser securityUser = SecurityUser
                     .builder()
-                    .user(Users.fromOAuth2User(oAuth2User, provider))
-//                    .attributes(oAuth2User.getAttributes())
-//                    .authorities(oAuth2User.getAuthorities())
+                    .user(user)
                     .build();
 
             saveOauth2User(securityUser);
-
-            System.out.println("OAUTH USER - ");
-            System.out.println(securityUser);
 
             return oAuth2User;
         };
@@ -77,17 +85,7 @@ public class CustomOAuthService {
 
     @Transactional
     protected void createUser(SecurityUser user) {
-        Users userEntity = saveUserIfNotExists(user);
-
-//        List<AuthorityEntity> authorities = user
-//                .authorities
-//                .stream()
-//                .map(a -> saveAuthorityIfNotExists(a.getAuthority(), user.getProvider()))
-//                .toList();
-//
-//        userEntity.mergeAuthorities(authorities);
-
-//        userEntityRepository.save(userEntity);
+        saveUserIfNotExists(user);
 
     }
 

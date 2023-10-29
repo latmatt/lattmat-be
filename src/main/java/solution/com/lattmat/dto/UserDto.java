@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import solution.com.lattmat.security.enumeration.LoginProvider;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -27,5 +28,7 @@ public class UserDto{
     private boolean isLock;
 
     private LoginProvider provider;
+
+    private Set<RoleDto> roles;
 
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import solution.com.lattmat.controller.BaseController;
 import solution.com.lattmat.domain.CustomResponse;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.security.config.SecurityConfigConst;
 import solution.com.lattmat.security.entity.RefreshToken;
 import solution.com.lattmat.security.model.UserInfoResponse;

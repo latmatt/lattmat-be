@@ -2,7 +2,7 @@ package solution.com.lattmat.security.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
-import solution.com.lattmat.model.Users;
+import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.security.entity.RefreshToken;
 
 import java.util.Optional;
