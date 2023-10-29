@@ -29,12 +29,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserDto register(SignUpUserRecord user) {
 
-        Optional<Users> usersOptional = userService.findUserByPhoneNumber(user.phoneNumber());
+        Optional<Users> usersOptional = userService.findUsersByLoginId(user.phoneNumber());
         if(usersOptional.isPresent()){
             throw new PhoneNumberAlreadyExistException(MessageConstant.USERNAME_ALREADY_EXIST);
         }
 
         UserDto userDto = modelMapper.map(user, UserDto.class);
+        userDto.setLoginId(user.phoneNumber());
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         return userService.saveUser(userDto);
     }
@@ -42,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Users login(LoginUserRecord user) {
 
-        Users loginUser = userService.findUserByPhoneNumber(user.phoneNumber())
+        Users loginUser = userService.findUsersByLoginId(user.phoneNumber())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid credentials"));
 
         if(passwordEncoder.matches(user.password(), loginUser.getPassword())){

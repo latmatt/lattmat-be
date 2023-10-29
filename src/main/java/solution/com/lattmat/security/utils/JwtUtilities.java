@@ -3,12 +3,13 @@ package solution.com.lattmat.security.utils;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import solution.com.lattmat.security.config.SecurityConfigConst;
+import solution.com.lattmat.security.entity.RefreshToken;
+import solution.com.lattmat.security.service.RefreshTokenService;
 
 import static solution.com.lattmat.security.config.SecurityConfigConst.*;
 
@@ -20,9 +21,12 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class JwtUtilities {
 
-    public String extractUsername(String token) {
+    private final RefreshTokenService refreshTokenService;
+
+    public String extractLoginId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -36,17 +40,17 @@ public class JwtUtilities {
     public Date extractExpiration(String token) { return extractClaim(token, Claims::getExpiration); }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        final String email = extractUsername(token);
+        final String email = extractLoginId(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
     public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(String email , List<String> roles) {
+    public String generateToken(String userId , List<String> roles) {
 
-        return Jwts.builder().setSubject(email).claim("role",roles).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(Date.from(Instant.now().plus(EXPIRATION_MILLS, ChronoUnit.MILLIS)))
+        return Jwts.builder().setSubject(userId).claim("role",roles).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(Date.from(Instant.now().plus(JWT_TOKEN_EXPIRATION_MILLS, ChronoUnit.MILLIS)))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
     }
 
@@ -62,7 +66,7 @@ public class JwtUtilities {
             log.trace("Invalid JWT token trace: {}", e);
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT token.");
-            log.trace("Expired JWT token trace: {}", e);
+            throw e;
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token.");
             log.trace("Unsupported JWT token trace: {}", e);
@@ -81,6 +85,25 @@ public class JwtUtilities {
         }
 
         return null;
+    }
+
+    public String getRefreshToken (HttpServletRequest httpServletRequest) {
+        final String bearerToken = httpServletRequest.getHeader("Authorization-Refresh");
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            // The part after "Bearer "
+            return bearerToken.substring(7,bearerToken.length());
+        }
+
+        return null;
+    }
+
+    public String getNewTokenByRefreshToken(String refreshToken){
+
+        return refreshTokenService.findByToken(refreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> generateToken(user.getLoginId(), null))
+                .orElseThrow(() -> new RuntimeException("Unknown error"));
     }
 
 }

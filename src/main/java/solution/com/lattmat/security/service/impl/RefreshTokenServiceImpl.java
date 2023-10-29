@@ -14,8 +14,12 @@ import solution.com.lattmat.security.repository.RefreshTokenRepo;
 import solution.com.lattmat.security.service.RefreshTokenService;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
+
+import static solution.com.lattmat.security.config.SecurityConfigConst.REFRESH_TOKEN_EXPIRATION_MILLS;
 
 @Service
 @AllArgsConstructor
@@ -26,7 +30,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   @Override
   public Optional<RefreshToken> findRefreshTokenByUserPhoneNumber(String phoneNumber) {
-    return refreshTokenRepository.findRefreshTokenByUserPhoneNumber(phoneNumber);
+    return refreshTokenRepository.findRefreshTokenByUser_PhoneNumber(phoneNumber);
   }
 
   @Override
@@ -38,19 +42,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
   @Transactional
   public RefreshToken createRefreshToken(String phoneNumber) {
 
-    return refreshTokenRepository.findRefreshTokenByUserPhoneNumber(phoneNumber).orElseGet(() -> {
-      Users user = userRepository.findUsersByPhoneNumber(phoneNumber).get();
-      return generateRefreshToken(user);
-    });
-
-  }
-
-  @Override
-  @Transactional
-  public RefreshToken createOAuthRefreshToken(String loginId) {
-
-    return refreshTokenRepository.findRefreshTokenByUserOauthLoginId(loginId).orElseGet(() -> {
-      Users user = userRepository.findUsersByOauthLoginId(loginId).get();
+    return refreshTokenRepository.findRefreshTokenByUser_LoginId(phoneNumber).orElseGet(() -> {
+      Users user = userRepository.findUsersByLoginId(phoneNumber).get();
       return generateRefreshToken(user);
     });
 
@@ -58,7 +51,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
   @Override
   public RefreshToken verifyExpiration(RefreshToken token) {
-    if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
+    System.out.println(token.getExpiryDate());
+    System.out.println(new Date());
+    if (token.getExpiryDate().before(new Date())) {
       refreshTokenRepository.delete(token);
       throw new TokenRefreshException(token.getToken(), "Refresh token was expired. Please make a new sign-in request");
     }
@@ -77,7 +72,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     try{
       refreshToken = new RefreshToken();
       refreshToken.setUser(users);
-      refreshToken.setExpiryDate(Instant.now().plusMillis(SecurityConfigConst.EXPIRATION_MILLS));
+      refreshToken.setExpiryDate(Date.from(Instant.now().plus(REFRESH_TOKEN_EXPIRATION_MILLS, ChronoUnit.MILLIS)));
       refreshToken.setToken(UUID.randomUUID().toString());
 
       refreshToken = refreshTokenRepository.save(refreshToken);

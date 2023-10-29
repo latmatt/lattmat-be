@@ -28,8 +28,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<Users> findUsersByOauthLoginId(String userid) {
-        return userRepository.findUsersByOauthLoginId(userid);
+    public Optional<Users> findUsersByLoginId(String userid) {
+        return userRepository.findUsersByLoginId(userid);
     }
 
     @Override

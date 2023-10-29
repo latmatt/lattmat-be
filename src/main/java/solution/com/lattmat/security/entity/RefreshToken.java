@@ -7,6 +7,7 @@ import lombok.ToString;
 import solution.com.lattmat.model.Users;
 
 import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -23,7 +24,7 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private Instant expiryDate;
+    private Date expiryDate;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

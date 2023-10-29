@@ -33,11 +33,11 @@ public class OAuthController extends BaseController {
     @GetMapping("/login-rediret")
     public ResponseEntity<CustomResponse> callBack(@RequestParam String userId){
 
-        Users loginUser = userService.findUsersByOauthLoginId(userId)
+        Users loginUser = userService.findUsersByLoginId(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid user"));
 
-        String jwtToken = jwtUtilities.generateToken(loginUser.getOauthLoginId(), null);
-        RefreshToken refreshToken = refreshTokenService.createOAuthRefreshToken(loginUser.getOauthLoginId());
+        String jwtToken = jwtUtilities.generateToken(loginUser.getLoginId(), null);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginUser.getLoginId());
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add(SecurityConfigConst.JWT_TOKEN, jwtToken);

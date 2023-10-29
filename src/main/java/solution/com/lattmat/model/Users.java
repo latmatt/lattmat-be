@@ -20,7 +20,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private String oauthLoginId;
+    private String loginId;
     private String username;
     private String firstName;
     private String lastName;
@@ -45,7 +45,7 @@ public class Users {
                 .firstName(oidcUser.getGivenName())
                 .lastName(oidcUser.getFamilyName())
                 .mail(oidcUser.getEmail())
-                .oauthLoginId(oidcUser.getName())
+                .loginId(oidcUser.getName())
                 .profileImage(oidcUser.getAttribute("picture"))
                 .build();
 
@@ -57,7 +57,7 @@ public class Users {
                 .provider(provider)
                 .username(oAuth2User.getAttribute("login"))
 //                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
-                .oauthLoginId(oAuth2User.getName())
+                .loginId(oAuth2User.getName())
                 .profileImage(oAuth2User.getAttribute("avatar_url"))
                 .build();
     }

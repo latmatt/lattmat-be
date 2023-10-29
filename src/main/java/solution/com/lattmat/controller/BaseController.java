@@ -13,8 +13,8 @@ public class BaseController {
         return createResponse(isSuccess, httpStatus,null, data, message);
     }
 
-    protected ResponseEntity<CustomResponse> createResponse(
-            boolean isSuccess, HttpStatus httpStatus, MultiValueMap<String, String> headers, Object data, String message
+    protected <T> ResponseEntity<CustomResponse> createResponse(
+            boolean isSuccess, HttpStatus httpStatus, MultiValueMap<String, String> headers, T data, String message
     ){
         CustomResponse response = CustomResponse.builder()
                 .success(isSuccess).code(httpStatus.value()).data(data).message(message).build();

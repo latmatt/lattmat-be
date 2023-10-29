@@ -2,12 +2,10 @@ package solution.com.lattmat.security.config;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +16,9 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import solution.com.lattmat.constant.SecurityConstant;
+import solution.com.lattmat.security.domain.JWTAccessDeniedHandler;
+import solution.com.lattmat.security.domain.JWTAuthenticationEntryPoint;
 import solution.com.lattmat.security.domain.OAuth2AuthenticationSuccessHandler;
 import solution.com.lattmat.security.filter.JwtAuthenticationFilter;
 
@@ -28,6 +29,8 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JWTAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain (
@@ -38,14 +41,18 @@ public class SecurityConfig {
         return http
                 .csrf(c -> c.disable())
                 .cors(c -> c.disable())
+                .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oc -> oc
-                        .loginPage("/login")
                         .userInfoEndpoint(ui -> ui
                                 .userService(oauth2LoginHandler)
                                 .oidcUserService(oidcLoginHandler))
                 .successHandler(oAuth2AuthenticationSuccessHandler))
-                .authorizeHttpRequests(req -> req.anyRequest().permitAll())
-                .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(handler ->
+                        handler.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler))
                 .build();
     }
 
@@ -56,10 +63,11 @@ public class SecurityConfig {
 
     @Bean
     ApplicationListener<AuthenticationSuccessEvent> successLogger() {
+        return SecurityConfig::onApplicationEvent;
+    }
 
-        return event -> {
-            log.info("success: {}", event.getAuthentication());
-        };
+    private static void onApplicationEvent(AuthenticationSuccessEvent event) {
+        log.info("success: {}", event.getAuthentication());
     }
 
 }

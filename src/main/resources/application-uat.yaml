@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-cksupf8168ec73emr0rg-a.singapore-postgres.render.com/lattmat_db
+    username: laddmat_db_admin
+    password: 45EJZtgO0xkgb7yAbHZ0aZVrdqBDS9kL
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  jpa:
+    hibernate:
+      ddl-auto: update
