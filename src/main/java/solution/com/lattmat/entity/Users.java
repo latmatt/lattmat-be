@@ -18,7 +18,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -43,7 +42,7 @@ public class Users {
     @Enumerated(EnumType.STRING)
     private LoginProvider provider;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(

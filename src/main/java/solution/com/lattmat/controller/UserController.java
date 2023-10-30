@@ -25,18 +25,18 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
 
-//    @PostMapping("/convert")
-//    public ResponseEntity<String> convert(@RequestParam UUID userId){
-//        final Optional<Users> usersOptional = userService.findUsersById(userId);
-//
-//        Users user = usersOptional.get();
-//        System.out.println(user.getRoles());
-//
-//        Role role = RoleConverter.dtoToEntity(roleService.getRoleByRoleType(UserRoleType.PREMIUM_USER));
-//        user.addRole(role);
-//
-//        userService.saveUser(UserConverter.entityToDto(user));
-//
-//        return ResponseEntity.ok("SUCCESS");
-//    }
+    @PostMapping("/convert")
+    public ResponseEntity<String> convert(@RequestParam UUID userId){
+        final Optional<Users> usersOptional = userService.findUsersById(userId);
+
+        Users user = usersOptional.get();
+        System.out.println(user.getRoles());
+
+        Role role = RoleConverter.dtoToEntity(roleService.getRoleByRoleType(UserRoleType.ROLE_PREMIUM_USER));
+        user.addRole(role);
+
+        userService.saveUser(UserConverter.entityToDto(user));
+
+        return ResponseEntity.ok("SUCCESS");
+    }
 }

@@ -30,11 +30,10 @@ public class SecurityUser implements UserDetails, OidcUser {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return user.getRoles()
-//                .stream()
-//                .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
-//                .toList();
-        return null;
+        return user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
+                .toList();
     }
 
     @Override

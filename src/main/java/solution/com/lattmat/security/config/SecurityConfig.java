@@ -53,10 +53,10 @@ public class SecurityConfig {
                                 .userService(oauth2LoginHandler)
                                 .oidcUserService(oidcLoginHandler))
                 .successHandler(oAuth2AuthenticationSuccessHandler))
-//                .authorizeHttpRequests(request -> request
-//                        .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
-//                        .anyRequest().authenticated())
-                .authorizeHttpRequests(request -> request.anyRequest().permitAll())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
+                        .requestMatchers(SecurityConstant.PREMIUM_URLS).hasRole("PREMIUM_USER")
+                        .anyRequest().authenticated())
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(handler ->
                         handler.authenticationEntryPoint(jwtAuthenticationEntryPoint)
