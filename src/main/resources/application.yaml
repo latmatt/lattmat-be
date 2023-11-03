@@ -11,8 +11,8 @@ spring:
             clientId: 558074316688-866sca12dqj9bdq8mq817dqh3gmlgkon.apps.googleusercontent.com
             clientSecret: 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
           facebook:
-            clientId: 291236720533751
-            clientSecret: 562bb8b7ba7b026828dd76d935bce354
+            clientId: 859141935812181
+            clientSecret: a5ccfb6a98e11b9336673ec427c56df7
             scope:
               - email
               - public_profile
