@@ -1,6 +1,6 @@
 app:
   oauth2:
-    redirectUri: https://materialistic-hole-production.up.railway.app/api/v1/o/login-rediret
+    redirectUri: https://example.com
 
 spring:
   datasource:
