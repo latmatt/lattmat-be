@@ -1,6 +1,6 @@
 app:
   oauth2:
-    redirectUri: http://localhost:8080/api/v1/o/login-rediret
+    redirectUri: http://localhost:8888/home
 
 spring:
   datasource:
