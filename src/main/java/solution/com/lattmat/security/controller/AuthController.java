@@ -122,9 +122,9 @@ public class AuthController extends BaseController {
 
     @PostMapping("/change-password")
     public ResponseEntity<CustomResponse<MessageResponse>> changePassword(
-            @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @RequestParam(required = true) UUID userId){
+            @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @RequestParam(required = true) String phoneNumber ){
 
-        Users user = userService.findUsersById(userId)
+        Users user = userService.findUsersByLoginId(phoneNumber)
                 .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
 
         if(passwordEncoder.matches(oldPassword, user.getPassword())) {
@@ -142,9 +142,9 @@ public class AuthController extends BaseController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<CustomResponse<MessageResponse>> resetPassword(
-            @RequestParam(required = true) String newPassword, @RequestParam(required = true) UUID userId){
+            @RequestParam(required = true) String newPassword, @RequestParam(required = true) String phoneNumber){
 
-        Users user = userService.findUsersById(userId)
+        Users user = userService.findUsersByLoginId(phoneNumber)
                 .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
 
         authService.changePassword(newPassword, user);
