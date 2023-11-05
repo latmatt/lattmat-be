@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .exceptionHandling(handler ->
                         handler.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                                 .accessDeniedHandler(jwtAccessDeniedHandler))
+                .requiresChannel(c -> c.anyRequest().requiresSecure())
                 .build();
     }
 
