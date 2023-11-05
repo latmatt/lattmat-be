@@ -1,7 +1,3 @@
-app:
-  oauth2:
-    redirectUri: https://example.com
-
 spring:
   datasource:
     url: jdbc:postgresql://dpg-cksupf8168ec73emr0rg-a.singapore-postgres.render.com/lattmat_db
