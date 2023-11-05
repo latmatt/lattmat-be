@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -18,9 +19,10 @@ import solution.com.lattmat.security.utils.JwtUtilities;
 import java.io.IOException;
 
 @Component
+@RefreshScope
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    @Value("${app.oauth2.redirectUri}")
+    @Value("${redirectUrl:http://localhost:3000}")
     private String redirectUri;
 
     private final JwtUtilities jwtUtilities;

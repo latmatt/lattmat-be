@@ -3,6 +3,8 @@ server:
     context-path: /api/v1
 
 spring:
+  config:
+    import: optional:configserver:http://localhost:9001
   security:
     oauth2:
       client:
@@ -19,10 +21,16 @@ spring:
   profiles:
     active: uat
   application:
-    name: LATTMAT
+    name: lattmat
 
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

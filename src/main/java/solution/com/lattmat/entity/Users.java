@@ -67,12 +67,31 @@ public class Users {
 
     public static Users fromOAuth2User(OAuth2User oAuth2User, LoginProvider provider) {
 
+        return switch (provider){
+            case APP -> new Users();
+            case GOOGLE -> generateGoogleUser(oAuth2User);
+            case FACEBOOK -> generateFacebookUser(oAuth2User);
+        };
+
+    }
+
+    private static Users generateGoogleUser(OAuth2User oAuth2User){
+
         return Users.builder()
-                .provider(provider)
+                .provider(LoginProvider.GOOGLE)
                 .username(oAuth2User.getAttribute("login"))
-//                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .loginId(oAuth2User.getName())
                 .profileImage(oAuth2User.getAttribute("avatar_url"))
+                .build();
+    }
+
+    private static Users generateFacebookUser(OAuth2User oAuth2User){
+
+        return Users.builder()
+                .provider(LoginProvider.FACEBOOK)
+                .username(oAuth2User.getAttribute("name"))
+                .loginId(oAuth2User.getAttribute("id"))
+                .mail(oAuth2User.getAttribute("email"))
                 .build();
     }
 

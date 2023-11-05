@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import solution.com.lattmat.controller.BaseController;
 import solution.com.lattmat.domain.CustomResponse;
 import solution.com.lattmat.domain.MessageResponse;
 import solution.com.lattmat.dto.UserDto;
+import solution.com.lattmat.exception.domain.InvalidCredentialsException;
 import solution.com.lattmat.exception.domain.TokenRefreshException;
 import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.security.config.SecurityConfigConst;
@@ -21,6 +24,7 @@ import solution.com.lattmat.security.model.UserInfoResponse;
 import solution.com.lattmat.security.service.AuthService;
 import solution.com.lattmat.security.service.RefreshTokenService;
 import solution.com.lattmat.security.utils.JwtUtilities;
+import solution.com.lattmat.service.UserService;
 
 import java.util.UUID;
 
@@ -31,9 +35,12 @@ import static solution.com.lattmat.security.config.SecurityConfigConst.REFRESH_T
 @RequestMapping("/auth")
 public class AuthController extends BaseController {
 
+    private final UserService userService;
     private final AuthService authService;
-    private final JwtUtilities jwtUtilities;
     private final RefreshTokenService refreshTokenService;
+
+    private final JwtUtilities jwtUtilities;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<CustomResponse<UserInfoResponse>> register(@RequestBody SignUpUserRecord user){
@@ -117,12 +124,35 @@ public class AuthController extends BaseController {
     public ResponseEntity<CustomResponse<MessageResponse>> changePassword(
             @RequestParam(required = true) String oldPassword, @RequestParam(required = true) String newPassword, @RequestParam(required = true) UUID userId){
 
-        authService.changePassword(oldPassword, newPassword, userId);
+        Users user = userService.findUsersById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+
+        if(passwordEncoder.matches(oldPassword, user.getPassword())) {
+            authService.changePassword(newPassword, user);
+        } else {
+            throw new InvalidCredentialsException("Your password is incorrect");
+        }
 
         return createResponse(
                 true, HttpStatus.OK, null,
                 new MessageResponse("Success"),
-                "Password reset successfully...");
+                "Password changed successfully...");
+
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<CustomResponse<MessageResponse>> resetPassword(
+            @RequestParam(required = true) String newPassword, @RequestParam(required = true) UUID userId){
+
+        Users user = userService.findUsersById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
+
+        authService.changePassword(newPassword, user);
+
+        return createResponse(
+                true, HttpStatus.OK, null,
+                new MessageResponse("Success"),
+                "Password changed successfully...");
 
     }
 

@@ -71,17 +71,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void changePassword(String oldPassword, String newPassword, UUID id) {
+    public void changePassword(String newPassword, Users user) {
 
-        Users user = userService.findUsersById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User is not found"));
-
-        if(passwordEncoder.matches(oldPassword, user.getPassword())){
-            user.setPassword(passwordEncoder.encode(newPassword));
-            userService.saveUser(UserConverter.entityToDto(user));
-        }else{
-            throw new InvalidCredentialsException("Please check your password.");
-        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userService.saveUser(UserConverter.entityToDto(user));
 
     }
 }
