@@ -25,6 +25,7 @@ import solution.com.lattmat.security.domain.JWTAccessDeniedHandler;
 import solution.com.lattmat.security.domain.JWTAuthenticationEntryPoint;
 import solution.com.lattmat.security.domain.OAuth2AuthenticationSuccessHandler;
 import solution.com.lattmat.security.filter.JwtAuthenticationFilter;
+import solution.com.lattmat.security.repository.OAuth2AuthorizationRequestRepository;
 
 import java.util.Arrays;
 
@@ -49,6 +50,7 @@ public class SecurityConfig {
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
                 .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oc -> oc
+                        .authorizationEndpoint(a -> a.authorizationRequestRepository(cookieAuthorizationRequestRepository()))
                         .userInfoEndpoint(ui -> ui
                                 .userService(oauth2LoginHandler)
                                 .oidcUserService(oidcLoginHandler))
@@ -63,6 +65,11 @@ public class SecurityConfig {
                                 .accessDeniedHandler(jwtAccessDeniedHandler))
 //                .requiresChannel(c -> c.anyRequest().requiresSecure())
                 .build();
+    }
+
+    @Bean
+    public OAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
+        return new OAuth2AuthorizationRequestRepository();
     }
 
     @Bean
