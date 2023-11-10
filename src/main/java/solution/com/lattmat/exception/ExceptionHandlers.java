@@ -50,6 +50,11 @@ public class ExceptionHandlers {
         return createHttpResponse(FORBIDDEN, "JWT Token is expired.");
     }
 
+    @ExceptionHandler(OTPExpiredException.class)
+    public ResponseEntity<CustomResponse> OTPExpiredException(Exception ex) {
+        return createHttpResponse(BAD_REQUEST, ex.getMessage());
+    }
+
     private ResponseEntity<CustomResponse> createHttpResponse(HttpStatus httpStatus, String message){
         CustomResponse response = CustomResponse.builder()
                 .success(false).code(httpStatus.value()).data(null).message(message).build();

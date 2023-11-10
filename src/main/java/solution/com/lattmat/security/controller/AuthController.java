@@ -1,5 +1,6 @@
 package solution.com.lattmat.security.controller;
 
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -60,6 +61,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
+    @RateLimiter(name = "basic", fallbackMethod = "basicFallBack")
     public ResponseEntity<CustomResponse<UserInfoResponse>> login(@RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password){
 
         LoginUserRecord user = new LoginUserRecord(phoneNumber, password);
@@ -85,6 +87,13 @@ public class AuthController extends BaseController {
 
         }
 
+        return null;
+    }
+
+    public ResponseEntity<CustomResponse<UserInfoResponse>> basicFallBack(
+            @RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password, Throwable t){
+        System.out.println("LIMITED RATE");
+        System.out.println(t.getMessage());
         return null;
     }
 
