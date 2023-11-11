@@ -17,8 +17,6 @@ spring:
           google:
             clientId: 558074316688-866sca12dqj9bdq8mq817dqh3gmlgkon.apps.googleusercontent.com
             clientSecret: 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
-#            clientId: 558074316688-tg9bhdnush0fnhesc623b6uov8hu0d5t.apps.googleusercontent.com
-#            clientSecret: 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
           facebook:
             clientId: 3485687095080374
             clientSecret: 3bb418d7cc81ecc9125d122a79f5f68e
@@ -43,14 +41,12 @@ springdoc:
 
 resilience4j:
   ratelimiter:
-    configs:
-      default:
-        registerHealthIndicator: true
     instances:
       basic:
-        timeoutDuration: 15s
-        limitRefreshPeriod: 500ms
         limitForPeriod: 3
+        limitRefreshPeriod: 15s
+        timeoutDuration: 15s
+
 
 #management:
 #  endpoints:

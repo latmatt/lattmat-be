@@ -65,7 +65,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    @RateLimiter(name = "basic", fallbackMethod = "basicFallBack")
+    @RateLimiter(name = "basic")
     public ResponseEntity<CustomResponse<UserInfoResponse>> login(@RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password){
 
         LoginUserRecord user = new LoginUserRecord(phoneNumber, password);
@@ -115,7 +115,7 @@ public class AuthController extends BaseController {
     }
 
     public ResponseEntity<CustomResponse<UserInfoResponse>> basicFallBack(
-            @RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password, Throwable t){
+            String phoneNumber, String password, Throwable t){
         System.out.println("LIMITED RATE");
         System.out.println(t.getMessage());
         return null;
