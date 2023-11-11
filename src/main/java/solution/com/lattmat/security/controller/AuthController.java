@@ -65,7 +65,7 @@ public class AuthController extends BaseController {
     }
 
     @PostMapping("/login")
-    @RateLimiter(name = "basic")
+    @RateLimiter(name = "login_limiter")
     public ResponseEntity<CustomResponse<UserInfoResponse>> login(@RequestParam(required = true) String phoneNumber, @RequestParam(required = true) String password){
 
         LoginUserRecord user = new LoginUserRecord(phoneNumber, password);
