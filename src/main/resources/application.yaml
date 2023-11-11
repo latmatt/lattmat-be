@@ -31,7 +31,7 @@ spring:
             tokenUri: https://graph.facebook.com/v17.0/oauth/access_token
             userInfoUri: https://graph.facebook.com/v17.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,picture.width(250).height(250)
   profiles:
-    active: uat
+    active: dev
   application:
     name: lattmat
 

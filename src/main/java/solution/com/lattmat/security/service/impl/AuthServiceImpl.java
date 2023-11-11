@@ -16,6 +16,7 @@ import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.exception.domain.UserRoleNotFoundException;
 import solution.com.lattmat.security.model.LoginUserRecord;
 import solution.com.lattmat.security.model.SignUpUserRecord;
+import solution.com.lattmat.security.oauth2User.OAuth2UserInfo;
 import solution.com.lattmat.security.service.AuthService;
 import solution.com.lattmat.service.RoleService;
 import solution.com.lattmat.service.UserService;
@@ -44,14 +45,39 @@ public class AuthServiceImpl implements AuthService {
                 throw new PhoneNumberAlreadyExistException(MessageConstant.USERNAME_ALREADY_EXIST);
             }
 
-            userDto = modelMapper.map(user, UserDto.class);
-            userDto.setLoginId(user.phoneNumber());
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            userDto = UserDto.builder()
+                    .firstName(user.firstName())
+                    .lastName(user.lastName())
+                    .username(user.username())
+                    .mail(user.mail())
+                    .loginId(user.phoneNumber())
+                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .profileImage(user.profileImage())
+                    .build();
+
             RoleDto role = roleService.getRoleByRoleType(UserRoleType.ROLE_NORMAL_USER);
             userDto.setRoles(Set.of(role));
         } catch (UserRoleNotFoundException e) {
             throw e;
         }
+
+        return userService.saveUser(userDto);
+    }
+
+    @Override
+    public UserDto register(OAuth2UserInfo userInfo) {
+        UserDto userDto = UserDto.builder()
+                .firstName(userInfo.getFirstName())
+                .lastName(userInfo.getLastName())
+                .username(userInfo.getName())
+                .loginId(userInfo.getId())
+                .mail(userInfo.getEmail())
+                .profileImage(userInfo.getPicture())
+                .provider(userInfo.getLoginProvider())
+                .build();
+
+        RoleDto role = roleService.getRoleByRoleType(UserRoleType.ROLE_NORMAL_USER);
+        userDto.setRoles(Set.of(role));
 
         return userService.saveUser(userDto);
     }

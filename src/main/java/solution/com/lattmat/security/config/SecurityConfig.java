@@ -41,9 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain (
-            HttpSecurity http,
-            OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2LoginHandler,
-            OAuth2UserService<OidcUserRequest, OidcUser> oidcLoginHandler
+            HttpSecurity http
     ) throws Exception {
         return http
                 .csrf(c -> c.disable())
@@ -51,9 +49,6 @@ public class SecurityConfig {
                 .addFilterAt(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2Login(oc -> oc
                         .authorizationEndpoint(a -> a.authorizationRequestRepository(cookieAuthorizationRequestRepository()))
-                        .userInfoEndpoint(ui -> ui
-                                .userService(oauth2LoginHandler)
-                                .oidcUserService(oidcLoginHandler))
                 .successHandler(oAuth2AuthenticationSuccessHandler))
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(SecurityConstant.PUBLIC_URLS).permitAll()
