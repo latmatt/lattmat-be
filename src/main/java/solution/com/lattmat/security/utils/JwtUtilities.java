@@ -87,23 +87,4 @@ public class JwtUtilities {
         return null;
     }
 
-    public String getRefreshToken (HttpServletRequest httpServletRequest) {
-        final String bearerToken = httpServletRequest.getHeader("Authorization-Refresh");
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            // The part after "Bearer "
-            return bearerToken.substring(7,bearerToken.length());
-        }
-
-        return null;
-    }
-
-    public String getNewTokenByRefreshToken(String refreshToken){
-
-        return refreshTokenService.findByToken(refreshToken)
-                .map(refreshTokenService::verifyExpiration)
-                .map(RefreshToken::getUser)
-                .map(user -> generateToken(user.getLoginId(), null))
-                .orElseThrow(() -> new RuntimeException("Unknown error"));
-    }
-
 }

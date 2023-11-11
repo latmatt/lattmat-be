@@ -50,8 +50,9 @@ public class AuthServiceImpl implements AuthService {
                     .lastName(user.lastName())
                     .username(user.username())
                     .mail(user.mail())
+                    .phoneNumber(user.phoneNumber())
                     .loginId(user.phoneNumber())
-                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .password(passwordEncoder.encode(user.password()))
                     .profileImage(user.profileImage())
                     .build();
 

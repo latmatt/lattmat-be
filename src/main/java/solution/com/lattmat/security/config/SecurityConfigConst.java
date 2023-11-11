@@ -8,4 +8,5 @@ public class SecurityConfigConst {
     public static final String REFRESH_TOKEN_COOKIE = "lattmat-jwt-refresh";
     public static final String JWT_TOKEN = "JWT_TOKEN";
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String AUTHORIZATION_TOKEN = "Authorization";
 }

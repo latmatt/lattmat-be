@@ -5,6 +5,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.LinkedMultiValueMap;
@@ -27,6 +30,7 @@ import solution.com.lattmat.security.service.RefreshTokenService;
 import solution.com.lattmat.security.utils.JwtUtilities;
 import solution.com.lattmat.service.UserService;
 
+import java.net.http.HttpResponse;
 import java.util.UUID;
 
 import static solution.com.lattmat.security.config.SecurityConfigConst.REFRESH_TOKEN;
@@ -68,7 +72,7 @@ public class AuthController extends BaseController {
         Users loginUser = authService.login(user);
 
         if(loginUser != null){
-            String jwtToken = jwtUtilities.generateToken(loginUser.getLoginId(), null);
+            String jwtToken = jwtUtilities.generateToken(loginUser.getId().toString(), null);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginUser.getLoginId());
 
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
@@ -84,10 +88,30 @@ public class AuthController extends BaseController {
                             loginUser.getLastName(), loginUser.getPhoneNumber(),
                             loginUser.getMail(), loginUser.getProfileImage()),
                     "Successfully login");
-
         }
 
         return null;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<CustomResponse<UserInfoResponse>> getCurrentUser(HttpServletRequest request) {
+
+        String jwtToken = jwtUtilities.getToken(request);
+        String loginId = jwtUtilities.extractLoginId(jwtToken);
+
+        final Users user = userService.findUsersById(UUID.fromString(loginId))
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid user"));
+
+        return createResponse(
+                true, HttpStatus.OK,
+                null,
+                new UserInfoResponse(
+                        user.getId(),
+                        user.getUsername(), user.getFirstName(),
+                        user.getLastName(), user.getPhoneNumber(),
+                        user.getMail(), user.getProfileImage()),
+                "Successfully login");
+
     }
 
     public ResponseEntity<CustomResponse<UserInfoResponse>> basicFallBack(

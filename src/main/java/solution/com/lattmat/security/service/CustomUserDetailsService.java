@@ -9,6 +9,7 @@ import solution.com.lattmat.entity.Users;
 import solution.com.lattmat.security.domain.SecurityUser;
 import solution.com.lattmat.service.UserService;
 
+import java.util.UUID;
 import java.util.concurrent.Executor;
 
 @Service
@@ -21,6 +22,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String loginId) throws UsernameNotFoundException {
         final Users user = userService.findUsersByLoginId(loginId)
+                .orElseThrow(() -> new UsernameNotFoundException("There is no user"));
+
+        return new SecurityUser(user, null);
+    }
+
+    public UserDetails loadUserById(String id) throws UsernameNotFoundException {
+        final Users user = userService.findUsersById(UUID.fromString(id))
                 .orElseThrow(() -> new UsernameNotFoundException("There is no user"));
 
         return new SecurityUser(user, null);
